@@ -10,7 +10,8 @@ import java.math.BigDecimal;
  */
 public class SaldoInsuficienteException extends Exception {
 
-    private BigDecimal saldoActual;
+    private static final long serialVersionUID = 1L;
+	private BigDecimal saldoActual;
     private BigDecimal cantidad;
 
     public SaldoInsuficienteException(String string, BigDecimal saldoActual, BigDecimal cantidad) {

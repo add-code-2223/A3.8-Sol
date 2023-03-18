@@ -36,38 +36,41 @@ public class EmpresaServicio implements IEmpresaServicio {
 		return empresa;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<Empresas> getAllEmpresasYEmpleados() {
 		SessionFactory sf = SessionFactoryUtil.getSessionFactory();
 		List<Empresas> empresas = new ArrayList<>();
 		Set<Empleados> empleados;
-		
+
 		Transaction tx = null;
 		try (Session session = sf.openSession()) {
 			tx = session.beginTransaction();
-//		 empresas =session.createQuery("select e from Empresas e "
-//		 		+ "inner join fetch e.empleados order by e.nombre").list();
-			
-			
-			 empresas =session.createQuery("select e from Empresas e order by e.nombre").list();
-					
-			
+
+			empresas = session.createQuery("select e from Empresas e order by e.nombre").list();
+			// Si no se fuerza la carga de los empleados, se obtendrá una
+			// LazyInitializationException
+			for (Empresas cia : empresas) {
+				empleados = cia.getEmpleados();
+				for (Empleados employee : empleados) {
+					System.out.println("Forzando la carga de los empleados");
+					employee.getNombre();
+				}
+			}
+
 			tx.commit();
-		}
-		catch (Exception ex) {
+		} catch (Exception ex) {
 			System.out.println("Ha ocurrido una exception: " + ex.getMessage());
 			if (tx != null) {
 				tx.rollback();
 			}
 
-			
-			
 		}
 		return empresas;
 	}
 
 	@Override
-	public boolean delete(String cif) throws Exception{
+	public boolean delete(String cif) throws Exception {
 		boolean exito = false;
 
 		SessionFactory sf = SessionFactoryUtil.getSessionFactory();
@@ -88,12 +91,10 @@ public class EmpresaServicio implements IEmpresaServicio {
 			if (tx != null) {
 				tx.rollback();
 			}
-			
+
 			throw ex;
 		}
 		return exito;
 	}
-	
-	
 
 }

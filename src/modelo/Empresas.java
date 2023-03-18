@@ -4,15 +4,11 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-
-import org.hibernate.annotations.BatchSize;
 
 @Entity
 @Table(name = "empresa")
@@ -22,14 +18,12 @@ public class Empresas implements Serializable {
 		 * 
 		 */
 	private static final long serialVersionUID = 1L;
-	@Id
-	//@Column(name="empresa_cif", length = 15)
+	@Id	
 	private String cif;
 	private String nombre;
 	private String direccion;
 	private String telefono;
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "empresa", cascade = CascadeType.REMOVE)
-	@BatchSize(size = 2)
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "empresa")	
 	private Set<Empleados> empleados = new HashSet<>();
 
 	
